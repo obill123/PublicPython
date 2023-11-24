@@ -703,6 +703,26 @@ main方法配置__all__列表。不写则全可访问
 
 控制类的比较行为，判断内容（哈希）是否相等
 
+## \_\_closure\_\_
+
+判断当前对象是否闭包。展示闭包存储外部函数的变量，
+
+```python
+#用上哪个闭包存储变量才输出哪个cell地址
+def outer(logo, s):
+    def inner(msg):
+        nonlocal logo
+        logo = "body"
+        print(f"<{logo}>{msg}<{logo}> {s}")
+
+    return inner
+
+outer = outer("html", 2)
+print(outer.__closure__)
+
+#(<cell at 0x000002141EE88AF8: str object at 0x000002141EEC0C38>, <cell at 0x000002141EE88CA8: int object at 0x0000000061968090>)
+```
+
 
 
 # 类的定义
@@ -975,11 +995,165 @@ do_speak(cat)
 
 
 
+# 泛型
+
+概念和java一致，但用法和声明区别较大
+
+```python
+from typing import Generic, TypeVar
+
+#定义泛型类型范围
+T = TypeVar('T')  # Can be anything
+A = TypeVar('A', str, bytes)  # Must be str or bytes
+
+#继承声明泛型的Generic类
+class Phone(Generic[A, T]):
+    def func(self, obj: T) -> A:
+        return str(obj)
+
+
+phone = Phone()
+print(type(phone.func(1)))
+```
 
 
 
+# 闭包
+
+读取函数内部的局部变量，避免对外暴露和拒绝被引用修改隐藏的变量。不同于java，java无法读取函数内部的变量，但可以将函数封装为对象，将函数内部的变量设置在类的属性上并给与private权限和提供get/set方法来访问
+
+优点：
+
+- 无需定义全局变量即可实现通过函数，持续的访问、修改某个值
+- 闭包使用的变量的所用于在函数内，难以被错误的调用修改
+
+缺点
+
+- 由于内部函数持续引用外部函数的值，所以会导致这一部分内存空间不被释放，一直占用内存（可以忽略）
+
+## 基本语法
+
+```python
+#在python中可以在方法里定义方法和局部变量
+#将logo全局变量保护起来避免外部引用修改
+
+#logo = "html"
+def outer(logo):
+    def inner(msg):
+        print(f"<{logo}>{msg}<{logo}>")
+    return inner #一定要返回内部方法本体对外调用
+
+outer = outer("html")#设置全局保护变量
+outer("html书签页")#其实就是调用了inner方法传参msg
+#输出<html>html书签页<html>
+```
+
+## nonlocal关键字
+
+若想修改最外层方法的局部变量，可以通过该关键字声明后修改
+
+logo变量一旦被初始化，是一直存在于内存的，除非被内部函数修改
+
+```python
+def outer(logo):
+    def inner(msg):
+        nonlocal logo
+        logo = "body"
+        print(f"<{logo}>{msg}<{logo}>")
+    return inner
+
+outer = outer("html")
+outer("html书签页")
+```
 
 
+
+# 装饰器
+
+由闭包演变而来。对于java来说其实就是动态代理，对于springboot来说，就是AOP切面增强
+
+按照闭包的方式来增强，显得冗余不简洁：
+
+```python
+#闭包方式
+def outer(func):
+    def inner():
+        print("doing before")
+        func()
+        print("doing after")
+
+    return inner
+
+
+def sleep():
+    print("doing process")
+
+#outer(sleep)其实返回的就是inner，还需要再调用一次，代码显得不够简洁
+outer = outer(sleep)
+outer()#等同于outer = outer(sleep)()
+```
+
+装饰器模式
+
+```python
+#入口参数一定要是函数类型
+def outer(func):
+    def inner():
+        print("doing before")
+        func()
+        print("doing after")
+    return inner
+
+#打上与闭包方法名同名的注解
+@outer
+def sleep():
+    print("doing process")
+
+#直接调用最外层方法即可
+sleep()
+```
+
+
+
+# 反射
+
+| 方法                        | 用法                                                         |
+| --------------------------- | ------------------------------------------------------------ |
+| hasattr(obj,name_str)       | 判断输入的name_str字符串在对象obj中是否存在(属性或方法)，存在返回True，否则返回False。 |
+| getattr(obj,name_str)       | 将按照输入的name_str字符串在对象obj中查找，如找到同名属性，则返回该属性；如找到同名方法，则返回方法的引用；如果未能找到同名的属性或者方法，则抛出异常：AttributeError。 |
+| setattr(obj,name_str,value) | name_str为属性名或者方法名，value为属性值或者方法的引用。    |
+| delattr(obj,name_str)       | 将你输入的字符串name_str在对象obj中查找，如找到同名属性或者方法就进行删除。 |
+
+```python
+class Farther:
+    def __init__(self, farther_msg, name):
+        self.__farther_msg = farther_msg
+        self.name = name
+
+    def farther_fun(self):
+        print(self.__farther_msg)
+
+    def get_private_param(self):
+        return self.__farther_msg
+
+farther = Farther("msg","n")
+attr1 = getattr(farther, "_Farther__farther_msg")#反射获取私有属性
+attr2 = getattr(farther, "name")#反射获取公共属性
+
+setattr(farther,"name","is name")#反射设置属性
+```
+
+
+
+# 多线程
+
+和java的本质一致，使用方法有区别
+
+```python
+thread_obj = threading.Thread()#创建线程
+```
+
+多线程很复杂，不作为基础内容
 
 
 
