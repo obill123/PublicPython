@@ -1145,6 +1145,51 @@ setattr(farther,"name","is name")#反射设置属性
 
 
 
+# 锁
+
+保持操作的原子性
+
+```python
+import threading
+
+# 全局变量
+counter = 0
+lock = threading.Lock()
+
+def increment():
+    global counter
+    for _ in range(1000000):
+        # 获取锁
+        lock.acquire()
+        try:
+            counter += 1
+        finally:
+            # 释放锁
+            lock.release()
+
+def un_increment():
+    global counter
+    for _ in range(1000000):
+            counter += 1
+
+# 创建两个线程并启动它们
+# thread1 = threading.Thread(target=increment)
+# thread2 = threading.Thread(target=increment)
+thread1 = threading.Thread(target=un_increment)
+thread2 = threading.Thread(target=un_increment)
+
+thread1.start()
+thread2.start()
+
+# 等待两个线程完成
+thread1.join()
+thread2.join()
+
+print("最终的计数器值:", counter)
+```
+
+
+
 # 多线程
 
 和java的本质一致，使用方法有区别
