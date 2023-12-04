@@ -561,7 +561,7 @@ with open(file="C://Users//Bill//Desktop//a.txt", mode="r+", encoding="utf-8") a
 
 # 异常
 
-## try...except...else...finally
+## 捕获异常并处理try...except...else...finally
 
 不同于java的异常语法，python会有else额外处理
 
@@ -593,13 +593,25 @@ def fun02():
 fun01()#division by zero
 ```
 
-## raise
+## 手动抛出异常raise
 
-手动抛出异常。与java中的throw new Exception语义一致
+与java中的throw new Exception语义一致
 
 ```python
 if not image_id:
    raise Exception("not image id")
+```
+
+## 断言（assert）
+
+判断。类似if语法
+
+```python
+assert ('linux' in sys.platform), "该代码只能在 Linux 下执行"
+#Traceback (most recent call last):
+#  File "D:/PY/doEc/lock.py", line 2, in <module>
+#    assert ('linux' in sys.platform), "该代码只能在 Linux 下执行"
+#AssertionError: 该代码只能在 Linux 下执行
 ```
 
 
@@ -1206,57 +1218,6 @@ thread_obj = threading.Thread()#创建线程
 ```
 
 多线程很复杂，不作为基础内容
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
