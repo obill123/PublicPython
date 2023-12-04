@@ -561,11 +561,9 @@ with open(file="C://Users//Bill//Desktop//a.txt", mode="r+", encoding="utf-8") a
 
 # 异常
 
-语法有个else和java不一样
+## try...except...else...finally
 
-另外，不同于java方法抛出异常，Python是没有throws exception显示语法的，但默认就带有该功能
-
-语法
+不同于java的异常语法，python会有else额外处理
 
 ```Python
 try:
@@ -593,6 +591,15 @@ def fun02():
 
 
 fun01()#division by zero
+```
+
+## raise
+
+手动抛出异常。与java中的throw new Exception语义一致
+
+```python
+if not image_id:
+   raise Exception("not image id")
 ```
 
 
