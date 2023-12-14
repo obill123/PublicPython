@@ -271,6 +271,25 @@ else:
 
 
 
+# 方法自动装包
+
+如下例子中，方法返回两个不同类型的参数，在调用方法后只用一个res值接收，那么会自动装载为Tuple元组类型
+
+```python
+from typing import Union, Tuple
+
+
+def fun():
+    return 10, "he"
+
+
+res: Union[Tuple[int, str]] = fun()
+print(type(res[0]))
+print(type(res[1]))
+```
+
+
+
 # 容器
 
 ## 列表
@@ -561,7 +580,7 @@ with open(file="C://Users//Bill//Desktop//a.txt", mode="r+", encoding="utf-8") a
 
 # 异常
 
-## 捕获异常并处理try...except...else...finally
+## try...except...else...finally
 
 不同于java的异常语法，python会有else额外处理
 
@@ -593,9 +612,9 @@ def fun02():
 fun01()#division by zero
 ```
 
-## 手动抛出异常raise
+## raise
 
-与java中的throw new Exception语义一致
+手动抛出异常。与java中的throw new Exception语义一致
 
 ```python
 if not image_id:
@@ -1218,6 +1237,57 @@ thread_obj = threading.Thread()#创建线程
 ```
 
 多线程很复杂，不作为基础内容
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
